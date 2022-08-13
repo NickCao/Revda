@@ -8,10 +8,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(ECM 1.0 REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(ECMUninstallTarget)
-find_program(MPV_PATH NAMES mpv REQUIRED)
-IF(${MPV_PATH} STREQUAL MPV_PATH-NOTFOUND)
-	message(FATAL_ERROR "mpv not found!!!")
-ENDIF()
 
 include(FeatureSummary)
 find_package(Cargo REQUIRED)
@@ -35,20 +31,6 @@ else()
     set(RUST_BUILD_FLAG --release)
 endif()
 
-SET(RUST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dmlive")
-if (MSVC)
-  SET(RUST_BIN "${RUST_DIR}/${RUST_TARGET_DIR}/dmlive")
-else()
-  SET(RUST_BIN "${RUST_DIR}/${RUST_TARGET_DIR}/dmlive")
-endif()
-
-add_custom_command(
-  OUTPUT "${RUST_BIN}"
-  COMMAND ${Cargo_EXECUTABLE} build ${RUST_BUILD_FLAG}
-  DEPENDS dmlive/src/main.rs
-  WORKING_DIRECTORY "${RUST_DIR}"
-)
-add_custom_target(dmlive-bin ALL DEPENDS "${RUST_BIN}")
 add_custom_target(revda-bin ALL DEPENDS "src-tauri/target/release/revda")
 
 install(PROGRAMS "${RUST_BIN}" DESTINATION bin)
@@ -57,6 +39,4 @@ install(PROGRAMS "src-tauri/target/release/revda" DESTINATION bin)
 install(FILES "icon/revda.svg"
         DESTINATION "share/icons/hicolor/scalable/apps")
 install(FILES "misc/revda.desktop"
-        DESTINATION "share/applications")
-install(FILES "misc/dmlive-mime.desktop"
         DESTINATION "share/applications")
