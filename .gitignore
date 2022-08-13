@@ -65,3 +65,6 @@ dist
 dist-ssr
 *.local
 .log/
+
+.envrc
+.direnv/
