@@ -7,9 +7,23 @@
     flake-utils.lib.eachSystem [ "x86_64-linux" ]
       (system:
         let pkgs = nixpkgs.legacyPackages.${system}; in
-        {
-          devShells.default = pkgs.mkShell {
-            nativeBuildInputs = with pkgs.rustPlatform; [ rust.cargo rust.rustc ];
+        with pkgs;{
+          devShells.default = mkShell {
+            strictDeps = true;
+            nativeBuildInputs = [
+              yarn
+              pkg-config
+            ] ++ (with rustPlatform; [
+              rust.cargo
+              rust.rustc
+            ]);
+            buildInputs = [
+              openssl
+              dbus
+              glib
+              webkitgtk
+            ];
+            OPENSSL_NO_VENDOR = true;
           };
         });
 }
